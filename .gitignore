@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# dlt — secrets file holds GCP private key, must never be committed
+.dlt/secrets.toml

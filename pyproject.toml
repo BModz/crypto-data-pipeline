@@ -1,0 +1,10 @@
+[project]
+name = "crypto-data-pipeline"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.13"
+dependencies = [
+    "dlt[bigquery]>=1.27.2",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+]
