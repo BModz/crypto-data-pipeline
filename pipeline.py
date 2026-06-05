@@ -8,8 +8,8 @@ Each run adds a new daily snapshot — rows are never deleted.
 Use `loaded_at` to filter to a specific day's data.
 """
 import dlt
-import pendulum
 import requests
+from datetime import datetime, timezone
 
 COINGECKO_URL = "https://api.coingecko.com/api/v3/coins/markets"
 COINS_PER_PAGE = 100
@@ -30,7 +30,7 @@ def coin_markets():
     response = requests.get(COINGECKO_URL, params=params, timeout=30)
     response.raise_for_status()
 
-    loaded_at = pendulum.now("UTC")
+    loaded_at = datetime.now(timezone.utc).isoformat()
     for coin in response.json():
         coin["loaded_at"] = loaded_at
         yield coin
