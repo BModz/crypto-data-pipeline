@@ -1,20 +1,24 @@
 """
 Ingestion pipeline: CoinGecko → BigQuery via dlt.
 
-Pulls the top 100 coins by market cap and loads them into
+Pulls the top 100 coins by market cap and appends them into
 BigQuery dataset `crypto_raw`, table `coin_markets`.
 
-Write disposition is REPLACE for now (Week 1): every run
-overwrites the table. Week 2 will switch to incremental append.
+Each run adds a new daily snapshot — rows are never deleted.
+Use `loaded_at` to filter to a specific day's data.
 """
 import dlt
+import pendulum
 import requests
 
 COINGECKO_URL = "https://api.coingecko.com/api/v3/coins/markets"
 COINS_PER_PAGE = 100
 
 
-@dlt.resource(write_disposition="replace")
+@dlt.resource(
+    write_disposition="append",
+    columns={"loaded_at": {"data_type": "timestamp"}},
+)
 def coin_markets():
     """Yield one dict per coin from CoinGecko /coins/markets."""
     params = {
@@ -26,7 +30,9 @@ def coin_markets():
     response = requests.get(COINGECKO_URL, params=params, timeout=30)
     response.raise_for_status()
 
+    loaded_at = pendulum.now("UTC")
     for coin in response.json():
+        coin["loaded_at"] = loaded_at
         yield coin
 
 
