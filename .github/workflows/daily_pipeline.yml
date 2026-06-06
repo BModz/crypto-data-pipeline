@@ -33,3 +33,28 @@ jobs:
 
       - name: Run pipeline
         run: uv run python pipeline.py
+
+      - name: Write dbt keyfile
+        env:
+          GCP_SERVICE_ACCOUNT_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        run: echo "$GCP_SERVICE_ACCOUNT_KEY" > /tmp/gcp-key.json
+
+      - name: Run dbt
+        env:
+          DBT_PROFILES_DIR: /tmp/dbt
+        run: |
+          mkdir -p /tmp/dbt
+          cat > /tmp/dbt/profiles.yml << 'EOF'
+          crypto_pipeline:
+            target: dev
+            outputs:
+              dev:
+                type: bigquery
+                method: service-account
+                project: crypto-pipeline-dev
+                dataset: crypto_transformed
+                keyfile: /tmp/gcp-key.json
+                threads: 1
+                timeout_seconds: 300
+          EOF
+          cd transform && uv run dbt run
