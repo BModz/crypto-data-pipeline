@@ -67,9 +67,18 @@ with tab1:
         "market_cap_usd", "total_volume_usd",
     ]].copy()
 
-    display["current_price_usd"] = display["current_price_usd"].apply(
-        lambda x: f"${x:,.4f}" if pd.notna(x) else "—"
-    )
+    def fmt_price(x):
+        if pd.isna(x):
+            return "—"
+        x = float(x)
+        if x >= 1:
+            return f"${x:,.2f}"
+        elif x >= 0.0001:
+            return f"${x:,.4f}"
+        else:
+            return f"${x:,.8f}"
+
+    display["current_price_usd"] = display["current_price_usd"].apply(fmt_price)
     display["price_change_pct_24h"] = display["price_change_pct_24h"].apply(
         lambda x: f"{x:+.2f}%" if pd.notna(x) else "—"
     )

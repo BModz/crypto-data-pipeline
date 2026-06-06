@@ -17,7 +17,24 @@ COINS_PER_PAGE = 100
 
 @dlt.resource(
     write_disposition="append",
-    columns={"loaded_at": {"data_type": "timestamp"}},
+    columns={
+        "loaded_at":                    {"data_type": "timestamp"},
+        "current_price":                {"data_type": "double"},
+        "market_cap":                   {"data_type": "double"},
+        "market_cap_rank":              {"data_type": "bigint"},
+        "total_volume":                 {"data_type": "double"},
+        "high_24h":                     {"data_type": "double"},
+        "low_24h":                      {"data_type": "double"},
+        "price_change_24h":             {"data_type": "double"},
+        "price_change_percentage_24h":  {"data_type": "double"},
+        "circulating_supply":           {"data_type": "double"},
+        "total_supply":                 {"data_type": "double"},
+        "max_supply":                   {"data_type": "double"},
+        "ath":                          {"data_type": "double"},
+        "ath_change_percentage":        {"data_type": "double"},
+        "atl":                          {"data_type": "double"},
+        "atl_change_percentage":        {"data_type": "double"},
+    },
 )
 def coin_markets():
     """Yield one dict per coin from CoinGecko /coins/markets."""
