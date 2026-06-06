@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: crypto_raw
+    database: crypto-pipeline-dev
+    schema: crypto_raw
+    tables:
+      - name: coin_markets
+        description: "Raw daily snapshots of top 100 coins from CoinGecko API"
