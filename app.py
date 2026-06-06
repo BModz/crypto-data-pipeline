@@ -59,24 +59,30 @@ tab1, tab2, tab3 = st.tabs(["🏆 Top Coins", "📉 Price Trends", "🚀 Biggest
 with tab1:
     st.subheader("Top 100 coins by market cap")
 
+    import pandas as pd
+
     display = latest[[
         "market_cap_rank", "name", "symbol",
         "current_price_usd", "price_change_pct_24h",
         "market_cap_usd", "total_volume_usd",
     ]].copy()
+
+    display["current_price_usd"] = display["current_price_usd"].apply(
+        lambda x: f"${x:,.4f}" if pd.notna(x) else "—"
+    )
+    display["price_change_pct_24h"] = display["price_change_pct_24h"].apply(
+        lambda x: f"{x:+.2f}%" if pd.notna(x) else "—"
+    )
+    display["market_cap_usd"] = display["market_cap_usd"].apply(
+        lambda x: f"${x:,.0f}" if pd.notna(x) else "—"
+    )
+    display["total_volume_usd"] = display["total_volume_usd"].apply(
+        lambda x: f"${x:,.0f}" if pd.notna(x) else "—"
+    )
+
     display.columns = ["Rank", "Name", "Symbol", "Price (USD)", "24h Change %", "Market Cap (USD)", "Volume (USD)"]
 
-    st.dataframe(
-        display,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Price (USD)": st.column_config.NumberColumn(format="$%.4f"),
-            "24h Change %": st.column_config.NumberColumn(format="%.2f%%"),
-            "Market Cap (USD)": st.column_config.NumberColumn(format="$%.0f"),
-            "Volume (USD)": st.column_config.NumberColumn(format="$%.0f"),
-        },
-    )
+    st.dataframe(display, width="stretch", hide_index=True)
 
 # ── Tab 2: Price Trends ──────────────────────────────────────────────────────
 with tab2:
@@ -99,7 +105,7 @@ with tab2:
             labels={"current_price_usd": "Price (USD)", "snapshot_date": "Date", "name": "Coin"},
         )
         fig.update_layout(hovermode="x unified")
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
     else:
         st.info("Select at least one coin above.")
 
@@ -123,7 +129,7 @@ with tab3:
             labels={"price_change_pct_24h": "24h Change %", "name": ""},
         )
         fig.update_layout(yaxis={"categoryorder": "total ascending"})
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     with col2:
         st.markdown("**Top 10 Losers**")
@@ -137,4 +143,4 @@ with tab3:
             labels={"price_change_pct_24h": "24h Change %", "name": ""},
         )
         fig.update_layout(yaxis={"categoryorder": "total descending"})
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
