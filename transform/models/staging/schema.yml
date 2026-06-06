@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: stg_coin_markets
+    description: "Cleaned and deduplicated daily snapshots from CoinGecko"
+    columns:
+      - name: id
+        description: "CoinGecko coin ID (e.g. bitcoin, ethereum)"
+        tests:
+          - not_null
+
+      - name: snapshot_date
+        description: "Calendar date of this snapshot"
+        tests:
+          - not_null
+
+      - name: current_price_usd
+        description: "Coin price in USD at time of load"
+        tests:
+          - not_null
+
+      - name: market_cap_rank
+        description: "Rank by market cap (1 = largest)"
+        tests:
+          - not_null

@@ -1,0 +1,25 @@
+version: 2
+
+models:
+  - name: mart_coin_daily
+    description: "One row per coin per day — the final table read by the dashboard"
+    columns:
+      - name: id
+        description: "CoinGecko coin ID"
+        tests:
+          - not_null
+
+      - name: snapshot_date
+        description: "Calendar date of this snapshot"
+        tests:
+          - not_null
+
+      - name: current_price_usd
+        description: "Coin price in USD"
+        tests:
+          - not_null
+
+      - name: market_cap_rank
+        description: "Rank by market cap"
+        tests:
+          - not_null
